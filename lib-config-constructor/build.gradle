@@ -1,0 +1,131 @@
+plugins {
+    id 'org.springframework.boot' version "$springBootPluginVersion"
+    id 'io.spring.dependency-management' version "$springDependencyManagerPluginVersion"
+    id 'java'
+    id "org.jetbrains.kotlin.jvm" version "$kotlinJvmPluginVersion"
+    id "org.jetbrains.kotlin.plugin.spring" version "$kotlinJvmPluginVersion"
+    id "com.google.protobuf" version "$protobufPluginVersion"
+    id "io.snyk.gradle.plugin.snykplugin" version "$snykPluginVersion"
+    id 'nu.studer.jooq' version "$jooqPluginVersion"
+    id 'maven-publish'
+    id "org.flywaydb.flyway" version "$flywayPluginVersion"
+}
+
+group = 'com.dataflow'
+version = "$version"
+
+/**
+ * Dependencies
+ */
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    // spring
+    api 'org.springframework.boot:spring-boot-starter'
+    api 'org.springframework.cloud:spring-cloud-stream'
+    api 'org.springframework.cloud:spring-cloud-starter-stream-kafka'
+
+    // lombok
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    // mapstruct
+    api "org.mapstruct:mapstruct:$mapStructVersion"
+    annotationProcessor "org.mapstruct:mapstruct-processor:$mapStructVersion"
+
+    // grpc
+    implementation "net.devh:grpc-server-spring-boot-starter:$grpcStarterVersion"
+    implementation "com.google.protobuf:protoc:$protocVersion"
+    implementation "io.grpc:protoc-gen-grpc-java:$protocGenJavaVersion"
+
+    // grpc kotlin
+    implementation("io.grpc:grpc-protobuf:$grpcVersion")
+    implementation("com.google.protobuf:protobuf-java-util:$protobufVersion")
+    implementation("com.google.protobuf:protobuf-kotlin:$protobufVersion")
+    implementation("io.grpc:grpc-kotlin-stub:$grpcKotlinVersion")
+
+    // kotlin
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core"
+
+    // kotlin FP
+//    api("io.arrow-kt:arrow-core:$arrowVersion")
+//    api("io.arrow-kt:arrow-fx-coroutines:$arrowVersion")
+//    api("io.arrow-kt:arrow-fx-stm:$arrowVersion")
+
+    // kotlin logging
+    api "io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion"
+
+    api project(':lib-commons')
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+/**
+ * Basic
+ */
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+sourceSets {
+    src {
+        main {
+            java {
+                srcDirs 'build/generated/source/proto/main/grpc'
+                srcDirs 'build/generated/source/proto/main/grpckt'
+                srcDirs 'build/generated/source/proto/main/java'
+                srcDirs 'build/generated/source/proto/main/kotlin'
+            }
+        }
+    }
+}
+
+/**
+ * Grpc
+ */
+
+// NOTE: https://github.com/grpc/grpc-kotlin/tree/master/examples
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:$protobufVersion"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:$protocGenJavaVersion"
+        }
+        grpckt {
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:$grpcKotlinVersion:jdk7@jar"
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                kotlin {}
+            }
+            task.plugins {
+                grpc {}
+                grpckt {}
+            }
+        }
+    }
+}

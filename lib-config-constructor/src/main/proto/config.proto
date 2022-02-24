@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dataflow.libconfigconstructor.dto";
+option java_outer_classname = "ConfigProto";
+
+import "google/protobuf/timestamp.proto";
+
+enum ConfigTypeGrpcEnum {
+  CT_SCHEMA = 0;
+  CT_JSON_EDITOR = 1;
+  CT_JSON_CONSTRUCTOR = 2;
+  CT_EXTERNAL_SYSTEM = 3;
+  CT_TEXT = 4;
+  CT_SMS = 5;
+  CT_EMAIL = 6;
+}
+
+message ConfigGrpcDto {
+  string configId = 1;
+  google.protobuf.Timestamp creationDate = 2;
+  google.protobuf.Timestamp updatingDate = 3;
+  string lastCreationAuthor = 4;
+  string lastUpdatingAuthor = 5;
+  ConfigTypeGrpcEnum configType = 6;
+  string kind = 7;
+  string content = 8;
+}
+
+message ConfigCreateGrpcDto {
+  ConfigTypeGrpcEnum configType = 1;
+  string kind = 2;
+  string content = 3;
+}
+
+message ConfigUpdateGrpcDto {
+  string configId = 1;
+  string content = 2;
+}

@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dataflow.libconfigconstructor";
+option java_outer_classname = "ConfigServiceProto";
+
+package configconstructor;
+
+import "common/void.proto";
+import "config.proto";
+
+service ConfigService {
+
+  // read
+  rpc getConfigById (ConfigServiceFindByIdRequest) returns (ConfigServiceOneItemResponse) {};
+  rpc getAllConfigByTypeAndKind (ConfigServiceFindByTypeAndKindRequest) returns (ConfigServiceManyItemsResponse) {};
+  rpc getAllConfigByType (ConfigServiceFindByTypeRequest) returns (ConfigServiceManyItemsResponse) {};
+  // create
+  rpc createConfig (ConfigServiceCreateRequest) returns (ConfigServiceOneItemResponse) {};
+  // update
+  rpc updateConfigById (ConfigServiceUpdateRequest) returns (ConfigServiceOneItemResponse) {};
+  // delete
+  rpc deleteConfigById (ConfigServiceFindByIdRequest) returns (VoidGrpcResponse) {};
+
+}
+
+message ConfigServiceFindByIdRequest {
+  string configId = 1;
+}
+
+
+message ConfigServiceFindByTypeRequest {
+  ConfigTypeGrpcEnum type = 1;
+}
+
+message ConfigServiceFindByTypeAndKindRequest {
+  ConfigTypeGrpcEnum type = 1;
+  string kind = 2;
+}
+
+message ConfigServiceCreateRequest {
+  ConfigCreateGrpcDto dto = 1;
+  string userId = 2;
+}
+
+message ConfigServiceUpdateRequest {
+  ConfigUpdateGrpcDto dto = 1;
+  string userId = 2;
+}
+
+message ConfigServiceOneItemResponse {
+  ConfigGrpcDto dto = 1;
+}
+
+message ConfigServiceManyItemsResponse {
+  repeated ConfigGrpcDto dto = 1;
+}
