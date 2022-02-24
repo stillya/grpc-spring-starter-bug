@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dataflow.commons";
+option java_outer_classname = "EnvironmentProto";
+
+enum EnvironmentTypeGrpcEnum {
+  ET_DEV = 0;
+  ET_PROD = 1;
+}

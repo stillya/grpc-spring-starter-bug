@@ -1,0 +1,10 @@
+rootProject.name = 'root'
+
+include 'lib-commons'
+
+// core
+include 'lib-commons'
+include 'lib-config-constructor'
+include 'ms-config-constructor'
+// auth
+include 'ms-auth-service'

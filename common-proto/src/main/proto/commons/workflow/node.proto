@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dataflow.commons";
+option java_outer_classname = "NodeProto";
+
+enum NodeSettingsStageGrpcEnum { SS_NOT_CONFIGURABLE = 0; SS_CONFIGURABLE = 1; SS_CONFIGURED = 2; }
+enum NodeExecutionPriorityGrpcEnum { EP_AUTO = 0; EP_FAST_SPEED = 1; EP_LOW_MEMORY = 2; }
+
+enum NodeExecutionStateGrpcEnum {
+  NEST_INITIAL = 0;
+  NEST_SYSTEM_ERROR = 1;
+  NEST_BUSINESS_ERROR = 2;
+  NEST_CONVERSION_ERROR = 3;
+  NEST_HOOK_ERROR = 4;
+  NEST_ABORTED = 5;
+  NEST_SUCCESS = 6;
+}
+
+enum NodeExecutionStatusGrpcEnum {
+  NESS_IDLE = 0;
+  NESS_LAUNCHING = 1;
+  NESS_CONVERTING = 2;
+  NESS_EXECUTING = 3;
+  NESS_FINISHING = 4;
+  NESS_ABORTING = 5;
+}

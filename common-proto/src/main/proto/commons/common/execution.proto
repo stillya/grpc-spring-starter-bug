@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dataflow.commons";
+option java_outer_classname = "ExecutionProto";
+
+enum ExecutionTypeGrpcEnum {
+  ET_BATCH = 0;
+  ET_ONLINE = 1;
+}
+
+enum ExecutionSystemGrpcEnum {
+  ES_HOOKS_ONLY = 0;
+  ES_DOCKER = 1;
+  ES_GROOVY_SCRIPT = 2;
+  ES_SQL_SCRIPT = 3;
+}
+
+enum LaunchTypeGrpcEnum {
+  LT_MANUAL = 0;
+  LT_SCHEDULE = 1;
+  LT_BUS = 2;
+}
+
+enum SnapshotTypeGrpcEnum {
+  ST_NONE = 0;
+  ST_LIGHT = 1;
+  ST_HEAVY = 2;
+}

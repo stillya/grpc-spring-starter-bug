@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dataflow.commons";
+option java_outer_classname = "WorkflowProto";
+
+enum WorkflowPurposeGrpcEnum {
+  WP_MARKETING_CAMPAIGN = 0;
+  WP_MODEL = 1;
+  WP_MODEL_VALIDATOR = 2;
+  WP_MODEL_LEARNER = 3;
+  WP_STRATEGY = 4;
+}
+
+enum WorkflowExecutionStateGrpcEnum {
+  WEST_INITIAL = 0;
+  WEST_SYSTEM_ERROR = 1;
+  WEST_NODES_ERROR = 2;
+  WEST_ABORTED = 3;
+  WEST_SUCCESS = 4;
+}
+
+enum WorkflowExecutionStatusGrpcEnum {
+  WESS_IDLE = 0;
+  WESS_LAUNCHING = 1;
+  WESS_EXECUTING = 2;
+  WESS_FINISHING = 3;
+  WESS_ABORTING = 4;
+}

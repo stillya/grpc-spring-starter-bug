@@ -1,0 +1,30 @@
+server:
+  port: 8092
+
+grpc:
+  server:
+    port: 8192
+  client:
+    AuthClient:
+      address: 'static://127.0.0.1:8082'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+
+spring:
+  application.name: ms-config-constructor
+  datasource:
+    url: jdbc:postgresql://${POSTGRESQL_HOST:localhost}:${POSTGRESQL_PORT:5432}/${POSTGRESQL_DB:df_config_constructor}?currentSchema=${POSTGRESQL_SCHEMA:public}&ApplicationName=${POSTGRESQL_CONNECTION_NAME:config-constructor}
+    username: ${POSTGRESQL_USER:postgres}
+    password: ${POSTGRESQL_PASSWORD:postgres}
+  flyway:
+    locations: classpath:db/migration
+  main:
+    allow-bean-definition-overriding: true
+
+logging:
+  level:
+    org.springframework: WARN
+    com.dataflow: DEBUG
+    org.hibernate.SQL: WARN
+    org.springframework.jdbc.core.JdbcTemplate: WARN

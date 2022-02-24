@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dataflow.commons";
+option java_outer_classname = "ErrorProto";
+
+enum ErrorGroupEnum {
+  // infrastructure
+  EG_SERVICE_UNAVAILABLE = 0; // grpc or rest connection trouble
+  EG_DATABASE_UNAVAILABLE = 1; // connection trouble
+  EG_BUS_UNAVAILABLE = 2; // connection trouble
+  EG_EXTERNAL_SYSTEM_UNAVAILABLE = 3; // not data flow system connection trouble
+  EG_DATABASE_LIMIT_EXCEEDED = 4;
+  EG_SERVICE_MEMORY_EXCEEDED = 5;
+  // platform
+  EG_DATABASE_QUERY_FAILED = 6;
+  EG_INTERNAL_SERVICE_ERROR = 7; // 500
+  // client
+  EG_INCORRECT_PARAMS = 8; // fe or user problem
+  EG_ENTITY_IN_ANOTHER_STAGE = 9; // to perform operation entity should be in other business stage
+  EG_FORBIDDEN = 10; // 404
+  EG_NOT_AUTHORIZED = 11; // 401
+}
+
+enum ErrorSourceEnum {
+  // core
+  ES_GATEWAY = 0;
+  ES_PROJECT_CONSTRUCTOR = 1;
+  ES_MODULE_LIBRARY = 2;
+  ES_CONFIG_CONSTRUCTOR = 3;
+  // auth
+  ES_AUTH = 4;
+  // data
+  ES_DATA_ACCESSOR = 5;
+  // schedule
+  ES_WORKFLOW_SCHEDULER = 6;
+  // execution
+  ES_WORKFLOW_EXECUTOR = 7;
+  ES_NODE_RUNNER = 8;
+  ES_DATA_REGISTRATOR = 9;
+  ES_DATA_CONVERTER = 10;
+}
+
+message ErrorGrpcDto {
+  ErrorGroupEnum group = 1;
+  ErrorSourceEnum source = 2;
+  string exception = 3;
+}

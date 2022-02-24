@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dataflow.commons";
+option java_outer_classname = "StorageProto";
+
+enum StorageSystemGrpcEnum {
+  SS_DATABASE = 0;
+  SS_NFS = 1;
+  SS_S3 = 2;
+  SS_KAFKA = 3;
+}

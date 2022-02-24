@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/common-proto" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lib-commons" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/lib-config-constructor" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ms-auth-service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ms-config-constructor" vcs="Git" />
+  </component>
+</project>

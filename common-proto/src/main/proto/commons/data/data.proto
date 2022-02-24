@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dataflow.commons";
+option java_outer_classname = "DataProto";
+
+enum DataTypeGrpcEnum {
+  DT_DATA_SOURCE = 0;
+  DT_DATA_FRAME = 1;
+}
+
+enum DataFormatGrpcEnum {
+  DF_PARQUET = 0;
+  DF_CSV = 1;
+  DF_DB_TABLE = 2;
+}

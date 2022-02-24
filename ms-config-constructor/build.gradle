@@ -1,0 +1,200 @@
+plugins {
+    id 'org.springframework.boot' version "$springBootPluginVersion"
+    id 'io.spring.dependency-management' version "$springDependencyManagerPluginVersion"
+    id 'java'
+    id "org.jetbrains.kotlin.jvm" version "$kotlinJvmPluginVersion"
+    id "org.jetbrains.kotlin.plugin.spring" version "$kotlinJvmPluginVersion"
+    id "com.google.protobuf" version "$protobufPluginVersion"
+    id "io.snyk.gradle.plugin.snykplugin" version "$snykPluginVersion"
+    id 'nu.studer.jooq' version "$jooqPluginVersion"
+    id 'maven-publish'
+    id "org.jetbrains.kotlin.kapt" version "$kaptPluginVersion"
+    id "org.flywaydb.flyway" version "$flywayPluginVersion"
+}
+
+group = 'com.dataflow'
+version = "$version"
+
+/**
+ * Dependencies
+ */
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // spring
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation "org.springframework.cloud:spring-cloud-stream"
+    implementation "org.springframework.cloud:spring-cloud-starter-stream-kafka"
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // postgres
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // jook
+    jooqGenerator "org.postgresql:postgresql:$postgresVersion"
+
+    // flyway
+    implementation 'org.flywaydb:flyway-core'
+
+//    // lombok
+//    compileOnly "org.projectlombok:lombok:$lombokVersion"
+//    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    // mapstruct
+    implementation "org.mapstruct:mapstruct:$mapStructVersion"
+    kapt("org.mapstruct:mapstruct-processor:$mapStructVersion")
+
+    // grpc
+    implementation 'net.devh:grpc-spring-boot-starter:2.13.1.RELEASE'
+    implementation "net.devh:grpc-server-spring-boot-starter:$grpcStarterVersion"
+    implementation("net.devh:grpc-client-spring-boot-starter:$grpcStarterVersion")
+    implementation "com.google.protobuf:protoc:$protocVersion"
+    //implementation "io.grpc:protoc-gen-grpc-java:$protocGenJavaVersion"
+
+    // grpc kotlin
+    implementation("io.grpc:grpc-protobuf:$grpcVersion")
+    implementation("com.google.protobuf:protobuf-java-util:$protobufVersion")
+    implementation("com.google.protobuf:protobuf-kotlin:$protobufVersion")
+    implementation("io.grpc:grpc-kotlin-stub:$grpcKotlinVersion")
+
+    // kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core"
+
+    // kotlin FP
+//    implementation("io.arrow-kt:arrow-core:$arrowVersion")
+//    implementation("io.arrow-kt:arrow-fx-coroutines:$arrowVersion")
+//    implementation("io.arrow-kt:arrow-fx-stm:$arrowVersion")
+
+    // kotlin logging
+    implementation "io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion"
+
+    // our libs
+    implementation project(':lib-commons')
+    implementation project(':lib-config-constructor')
+
+    // for M1 purposes
+    compileOnly("io.netty:netty-resolver-dns-native-macos:4.1.72.Final:osx-aarch_64")
+
+
+    // tests
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testImplementation "org.testcontainers:testcontainers:$testContainersVersion"
+    testImplementation group: 'org.testcontainers', name: 'postgresql', version: "$testContainersVersion"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/grpckt'
+            srcDirs 'build/generated/source/proto/main/java'
+            srcDirs 'build/generated/source/proto/main/kotlin'
+        }
+    }
+}
+
+/**
+ * Basic
+ */
+
+test {
+    exclude '**/*'
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+test {
+    useJUnitPlatform()
+}
+
+/**
+ * Database
+ */
+
+flyway {
+    url = "jdbc:postgresql://$dbHost:$dbPort/$dbName?currentSchema=public&ApplicationName=$dbApplication"
+    user = 'postgres'
+    password = 'postgres'
+    schemas = ['public']
+    locations = ['classpath:db/migration']
+    baselineOnMigrate = true
+}
+
+jooq {
+    version = "$jookVersion"  // default (can be omitted)
+    edition = nu.studer.gradle.jooq.JooqEdition.OSS  // default (can be omitted)
+
+    configurations {
+        main {  // name of the jOOQ configuration
+            generateSchemaSourceOnCompilation = true  // default (can be omitted)
+
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                jdbc {
+                    driver = 'org.postgresql.Driver'
+                    url = "jdbc:postgresql://$dbHost:$dbPort/$dbName"
+                    user = "$dbUser"
+                    password = "$dbPassword"
+//                    properties {
+//                        property {
+//                            key = 'ssl'
+//                            value = 'false'
+//                        }
+//                    }
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        inputSchema = 'public'
+                        forcedTypes {
+                            forcedType {
+                                userType = 'com.fasterxml.jackson.databind.JsonNode'
+                                includeTypes = '.*'
+                                includeExpression = '.*JSON.*'
+                                binding = 'com.dataflow.binding.PostgresJSONBBinding'
+                            }
+                        }
+                    }
+                    generate {
+                        pojosAsKotlinDataClasses = true
+                        deprecated = false
+                        records = true
+                        pojos = true
+                        immutablePojos = false
+                        fluentSetters = true
+                        daos = true
+                    }
+                    target {
+                        packageName = "com.dataflow.$dataflowPackageName"
+                        directory = 'build/generated-src/jooq/main'  // default (can be omitted)
+                    }
+                    strategy.name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+                }
+            }
+        }
+    }
+}

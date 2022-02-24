@@ -1,0 +1,86 @@
+plugins {
+    id("org.springframework.boot") version "$springBootPluginVersion"
+    id("io.spring.dependency-management") version "$springDependencyManagerPluginVersion"
+    id "org.jetbrains.kotlin.jvm" version "$kotlinJvmPluginVersion"
+    id "org.jetbrains.kotlin.plugin.spring" version "$kotlinJvmPluginVersion"
+    id "org.jetbrains.kotlin.kapt" version "$kaptPluginVersion"
+    id("com.google.protobuf") version "$protobufPluginVersion"
+    id "io.snyk.gradle.plugin.snykplugin" version "$snykPluginVersion"
+}
+
+group = "authservice"
+version = "$version"
+
+repositories {
+    mavenCentral()
+}
+
+/**
+ * Dependencies
+ */
+
+dependencies {
+    // spring
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+//    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    // r2dbc postgres driver
+    implementation("io.r2dbc:r2dbc-postgresql")
+    implementation("org.postgresql:postgresql")
+    // flyway
+    implementation("org.flywaydb:flyway-core")
+    // tests
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.projectreactor:reactor-test")
+    // mapstruct
+    implementation("org.mapstruct:mapstruct:$mapStructVersion")
+    kapt("org.mapstruct:mapstruct-processor:$mapStructVersion")
+    // grpc
+    implementation("net.devh:grpc-server-spring-boot-starter:$grpcStarterVersion")
+    implementation "net.devh:grpc-client-spring-boot-starter:$grpcStarterVersion"
+    implementation("com.google.protobuf:protoc:$protocVersion")
+    // grpc kotlin
+    implementation("io.grpc:grpc-protobuf:$grpcVersion")
+    implementation("com.google.protobuf:protobuf-java-util:$protobufVersion")
+    implementation("com.google.protobuf:protobuf-kotlin:$protobufVersion")
+    implementation("io.grpc:grpc-kotlin-stub:$grpcKotlinVersion")
+    // kotlin
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    // kotlin logging
+    implementation "io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion"
+    // for M1 purposes
+    compileOnly("io.netty:netty-resolver-dns-native-macos:4.1.72.Final:osx-aarch_64")
+    // our libs
+    implementation(project(":lib-commons"))
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+    }
+}
+
+tasks {
+    test {
+        exclude("**/*")
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs("build/generated/source/proto/main/grpc")
+            srcDirs("build/generated/source/proto/main/grpckt")
+            srcDirs("build/generated/source/proto/main/java")
+            srcDirs("build/generated/source/proto/main/kotlin")
+        }
+    }
+}

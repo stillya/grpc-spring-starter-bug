@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dataflow.commons";
+option java_outer_classname = "BusinessModuleProto";
+
+enum BusinessModuleScopeGrpcEnum {
+  S_USER_SCOPE = 0;
+  S_MARKET_SCOPE = 1;
+  S_WORKFLOW_SCOPE = 2;
+}

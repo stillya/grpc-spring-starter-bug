@@ -1,0 +1,19 @@
+image: gradle:6.9.0-jdk11
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+  - curl -fL https://getcli.jfrog.io | sh
+  - ./jfrog rt config --url=http://artifactory:8081/artifactory --user=$ARTIFACTORY_USER   --password=$ARTIFACTORY_PASS
+  - ./jfrog rt c show
+
+stages:
+  - build
+
+build:
+  stage: build
+  script: 
+    - gradle clean jar
+    - ./jfrog rt u build/libs/* campain/$CI_PROJECT_NAME/

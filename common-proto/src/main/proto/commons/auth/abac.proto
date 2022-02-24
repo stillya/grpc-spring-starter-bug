@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dataflow.commons";
+option java_outer_classname = "AbacProto";
+
+message AbacRuleGrpc {
+  string name = 1;
+  string description = 2;
+  string domainType = 3;
+  string condition = 4;
+}

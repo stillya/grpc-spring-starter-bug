@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dataflow.commons";
+option java_outer_classname = "LifecycleProto";
+
+enum LifecycleStageGrpcEnum {
+  LS_CREATING = 0;
+  LS_CREATED = 1;
+  LS_DELETING = 2;
+  LS_DELETED = 3;
+}
+
+enum LifecycleTaskStageGrpcEnum {
+  LTS_SCHEDULED = 0;
+  LTS_EXECUTING = 1;
+  LTS_EXECUTED = 2;
+  LTS_FAILED = 3;
+  LTS_ABORTING = 4;
+  LTS_ABORTED = 5;
+}

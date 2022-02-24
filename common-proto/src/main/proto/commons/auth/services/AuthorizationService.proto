@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dataflow.commons";
+option java_outer_classname = "AuthorizationServiceProto";
+
+package authservice;
+
+import "auth/abac.proto";
+
+service AuthorizationService {
+  rpc getRuleByName(AuthorizationServiceGetRuleByNameRequest) returns (AuthorizationServiceGetRuleByNameResponse) {}
+}
+
+message AuthorizationServiceGetRuleByNameRequest {
+  string name = 1;
+}
+
+message AuthorizationServiceGetRuleByNameResponse {
+  AbacRuleGrpc rule = 2;
+}

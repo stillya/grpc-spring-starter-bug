@@ -1,0 +1,36 @@
+server:
+  port: 8085
+
+grpc:
+  server:
+    port: 8082
+  client:
+    AuthClient:
+      address: 'static://127.0.0.1:8081'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+
+keycloak:
+  enabled: true
+  realm: SpringBootKeycloak
+  clientId: client-app
+  clientSecret:
+  username: system_app
+  password: system
+  baseUrl:
+
+spring:
+  application.name: auth-service
+  webflux:
+    base-path: /auth
+  r2dbc:
+    database: df_auth_service
+    schema: public
+    applicationName: auth_service
+    host: localhost
+    port: 5432
+    username: postgres
+    password: postgres
+  main:
+    allow-bean-definition-overriding: true

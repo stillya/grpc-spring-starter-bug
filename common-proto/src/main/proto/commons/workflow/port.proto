@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dataflow.commons";
+option java_outer_classname = "PortProto";
+
+enum PortDirectionGrpcEnum {
+  PD_INPUT = 0;
+  PD_OUTPUT = 1;
+  PD_INPUT_PORTAL = 2;
+  PD_OUTPUT_PORTAL = 3;
+}
+
+enum PortBehaviourGrpcEnum {
+  PB_STATIC = 0;
+  PB_ELASTIC = 1;
+  PB_DYNAMIC = 2;
+  PB_FACTORY = 3;
+}
+
+enum PortMetadataStageGrpcEnum {
+  PMS_NO_METADATA = 0;
+  PMS_COMPUTING = 1;
+  PMS_COMPUTED = 2;
+}
+
+enum PortExecutionBranchGrpcEnum {
+  PEB_SUCCESS = 0;
+  PEB_ERROR = 1;
+  PEB_SUCCESS_AND_ERROR = 2;
+}
+
+enum PortDataTypeGrpcEnum {
+  PDT_GRID = 0;
+  PDT_TEXT = 1;
+  PDT_BINARY = 2;
+}

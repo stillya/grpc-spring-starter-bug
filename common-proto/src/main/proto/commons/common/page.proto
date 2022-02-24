@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dataflow.commons";
+option java_outer_classname = "PageProto";
+
+message PageGrpcRequest {
+  int32 recordsPerPage = 1;
+  int32 currentPageNumber = 2; // starting from 1
+}
+
+message PageGrpcResponse {
+  int64 totalRecords = 1; // in table
+  int32 totalPages = 2; // in table
+  int32 recordsPerPage = 3;
+  int32 currentPageNumber = 4; // starting from 1
+}
